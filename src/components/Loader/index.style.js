@@ -7,14 +7,14 @@ export const LoaderWrapper = styled.div`
     height: 100%;
     min-height: 100vh;
     width: 100%;
-    max-width: 450px;
     z-index: 1;
+    top: 0;
   }
   .loader-image {
     position: absolute;
-    top: 50%;
-    left: 40%;
-    width: 64px;
+    top: 45%;
+    left: 45%;
+    width: 10%;
     display: flex;
     justify-content: center;
     align-items: center;
