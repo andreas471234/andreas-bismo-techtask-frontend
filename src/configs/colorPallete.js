@@ -3,5 +3,7 @@ export const ColorPallette = {
   secondary: "#6edce6",
   lightGrey: "#f5f5f5",
   white:"#fff",
+  darkGrey: "#967800",
+  hoverTextColor: "#50a0aa",
   
 }

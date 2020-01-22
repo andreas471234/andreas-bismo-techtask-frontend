@@ -1,10 +1,12 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { Container } from "../../components"
+import { Container, Button } from "../../components"
 import ErrorActions from "../../redux/error/action"
 import LoadingActions from "../../redux/loading/action"
-import Cookies from "universal-cookie"
 import { HomeWrapper } from "./index.style"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment"
 
 const { resetErrorRedux } = ErrorActions
 const { resetLoadingRedux } = LoadingActions
@@ -13,6 +15,7 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      cookDate: moment().toDate()
     }
   }
 
@@ -21,13 +24,36 @@ class Home extends Component {
     this.props.resetLoadingRedux(['SEND_OTP', 'REGISTRATION', 'LOGIN'])
   }
 
+  handleChange = date => {
+    this.setState({
+      cookDate: date
+    });
+  };
+
+  getIngredients = () => {
+    console.log("get ajax")
+    console.log(moment(this.state.cookDate).format("YYYY-MM-DD"))
+  }
+
   render() {
     return (
       <Container
         loader={false}
       >
         <HomeWrapper>
-          test
+          <div className="date-container">
+            <div className="date-label">
+              <span>Choose cooking date:</span>
+              <DatePicker
+                selected={this.state.cookDate}
+                onChange={this.handleChange}
+                dateFormat={"yyyy-MM-dd"}
+              />
+            </div>
+            <Button className="check-btn" onClick={e => this.getIngredients()}>
+              Check Ingredients
+            </Button>
+          </div>
         </HomeWrapper>
       </Container>
     )
