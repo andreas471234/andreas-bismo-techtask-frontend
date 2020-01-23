@@ -1,15 +1,6 @@
-import Cookies from 'universal-cookie'
-
-const cookies = new Cookies()
-
-export function clearToken() {
-  cookies.remove('agent_code')
-  cookies.remove('agent_token')
-  cookies.remove('agent_id')
-}
-
 export function getHeader() {
   return {
+    'Access-Control-Allow-Origin': '*',
     'Content-Type': 'application/json'
   }
 }

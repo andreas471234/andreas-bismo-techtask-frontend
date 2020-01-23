@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
 import { Container, Button } from "../../components"
+import CookActions from "../../redux/cook/action"
 import ErrorActions from "../../redux/error/action"
 import LoadingActions from "../../redux/loading/action"
 import { HomeWrapper } from "./index.style"
@@ -8,6 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment"
 
+const { getIngredientList } = CookActions
 const { resetErrorRedux } = ErrorActions
 const { resetLoadingRedux } = LoadingActions
 
@@ -31,8 +33,11 @@ class Home extends Component {
   };
 
   getIngredients = () => {
+    const { ingredientList } = this.props
     console.log("get ajax")
+    this.props.getIngredientList()
     console.log(moment(this.state.cookDate).format("YYYY-MM-DD"))
+    console.log(ingredientList)
   }
 
   render() {
@@ -61,7 +66,9 @@ class Home extends Component {
 }
 
 export default connect((state) => ({
+  ingredientList: state.Cook.ingredientList,
 }), {
+  getIngredientList,
   resetErrorRedux,
   resetLoadingRedux,
 })(Home)
