@@ -10,4 +10,7 @@ export const BottomTabsWrapper = styled.div`
   background-color: ${ColorPallette.primary};
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
+  padding: 12px 0;
+  font-size: 14px;
+  color: ${ColorPallette.black}
 `

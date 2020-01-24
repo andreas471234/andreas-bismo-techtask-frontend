@@ -31,6 +31,15 @@ app.get('/ingredients', function(req, res){
   });
 });
 
+app.get('/recipes', function(req, res){
+  var ingredientList = req.query.ingredients
+  var url = "https://lb7u7svcm5.execute-api.ap-southeast-1.amazonaws.com/dev/recipes?ingredients=" + ingredientList;
+  request(url, function(err, resp, body) {
+    body = JSON.parse(body);
+    res.send(body)
+  });
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

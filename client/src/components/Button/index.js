@@ -3,9 +3,16 @@ import { ButtonWrapper } from "./index.style"
 
 class Button extends Component {
   render() {
-    const { text, color, backgroundColor, handleClick, disabled, children, borderRadius, ...props } = this.props
+    const { color, backgroundColor, handleClick, children, borderRadius, className, ...props } = this.props
     return (
-      <ButtonWrapper textColor={color} backgroundColor={backgroundColor} borderRadius={borderRadius} onClick={handleClick} disabled={disabled} {...props}>
+      <ButtonWrapper
+        className={className}
+        textColor={color}
+        backgroundColor={backgroundColor}
+        borderRadius={borderRadius}
+        onClick={handleClick}
+        {...props}
+      >
         {children}
       </ButtonWrapper>
     )

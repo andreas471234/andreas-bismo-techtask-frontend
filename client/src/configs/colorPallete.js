@@ -9,5 +9,8 @@ export const ColorPallette = {
   hoverColor2: "#dfe6e9",
   purple: "#6c5ce7",
   black: "#2d3436",
-  darkerGrey: "#636e72"
+  darkerGrey: "#636e72",
+  pink: "#fab1a0",
+  yellow: "#e67e22",
+  darkGreen: "#16a085"
 }

@@ -28,8 +28,34 @@ export function* getIngredientList() {
   });
 }
 
+export function* getRecipeList() {
+  yield takeEvery(actions.GET_RECIPE_LIST_REQUEST, function* ({ payload }) {
+    try {
+      let res = yield call(getApi, { ...payload, url: ConfigUrl.recipe })
+      if (res) {
+        yield put({
+          type: actions.GET_RECIPE_LIST_SUCCESS,
+          data: res.data
+        })
+      } else {
+        yield put({
+          type: actions.GET_RECIPE_LIST_FAILURE,
+          data: []
+        });
+      }
+    }
+    catch (res) {
+      yield put({
+        type: actions.GET_RECIPE_LIST_FAILURE,
+        data: []
+      });
+    }
+  });
+}
+
 export default function* rootSaga() {
   yield all([
-    fork(getIngredientList)
+    fork(getIngredientList),
+    fork(getRecipeList)
   ]);
 }

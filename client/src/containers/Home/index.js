@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { Container, Button, Card } from "../../components"
+import { Container, Button, Card, RecipeCard } from "../../components"
 import CookActions from "../../redux/cook/action"
 import ErrorActions from "../../redux/error/action"
 import LoadingActions from "../../redux/loading/action"
@@ -9,7 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment"
 
-const { getIngredientList } = CookActions
+const { getIngredientList, getRecipeList } = CookActions
 const { resetErrorRedux } = ErrorActions
 const { resetLoadingRedux } = LoadingActions
 
@@ -19,22 +19,41 @@ class Home extends Component {
     this.state = {
       cookDate: moment().toDate(),
       chosenIngredients: [],
+      showIngredientList: false,
+      showRecipeList: false,
     }
   }
 
   componentDidMount() {
-    this.props.resetErrorRedux(['SEND_OTP', 'REGISTRATION', 'LOGIN'])
-    this.props.resetLoadingRedux(['SEND_OTP', 'REGISTRATION', 'LOGIN'])
+    this.props.resetErrorRedux(['GET_INGREDIENT_LIST'])
+    this.props.resetLoadingRedux(['GET_INGREDIENT_LIST'])
   }
 
   handleChange = date => {
     this.setState({
-      cookDate: date
+      cookDate: date,
+      showIngredientList: false,
     });
   };
 
   getIngredients = () => {
-    this.props.getIngredientList()
+    this.setState({
+      chosenIngredients: [],
+      showIngredientList: true,
+      showRecipeList: false,
+    },
+      () => this.props.getIngredientList()
+    )
+  }
+
+  getRecipe = () => {
+    const { chosenIngredients } = this.state
+    this.setState({
+      showIngredientList: false,
+      showRecipeList: true,
+    },
+      () => this.props.getRecipeList({ query: { ingredients: chosenIngredients.join(',') }})
+    )
   }
 
   handleClick = (item, cookDate) => {
@@ -82,26 +101,60 @@ class Home extends Component {
     </div>
   }
 
+  renderRecipe() {
+    const { recipeList } = this.props
+    if (!Array.isArray(recipeList)) {
+      return <div></div>
+    }
+
+    return <div className="recipe-list">
+      {
+        recipeList.map((item, index) =>
+          <RecipeCard item={item} key={index}/>
+        )
+      }
+    </div>
+  }
+
   render() {
+    const {
+      showIngredientList,
+      showRecipeList,
+      chosenIngredients,
+    } = this.state
+    const {
+      getIngredientsLoading,
+    } = this.props
+
     return (
       <Container
-        loader={false}
+        loader={getIngredientsLoading}
       >
         <HomeWrapper>
-          <div className="date-container">
-            <div className="date-label">
-              <span>Choose cooking date:</span>
-              <DatePicker
-                selected={this.state.cookDate}
-                onChange={this.handleChange}
-                dateFormat={"yyyy-MM-dd"}
-              />
+          <div className="header-container">
+            <div className="date-container">
+              <div className="date-label">
+                <span>Choose cooking date:</span>
+                <DatePicker
+                  selected={this.state.cookDate}
+                  onChange={this.handleChange}
+                  dateFormat={"yyyy-MM-dd"}
+                />
+              </div>
+              <Button className="btn check-btn" onClick={e => this.getIngredients()}>
+                Check Ingredients
+              </Button>
             </div>
-            <Button className="check-btn" onClick={e => this.getIngredients()}>
-              Check Ingredients
-            </Button>
+            {
+              chosenIngredients.length > 0 &&
+              !!showIngredientList &&
+              <Button className="btn recipe-btn" onClick={e => this.getRecipe()}>
+                Get Recipe
+              </Button>
+            }
           </div>
-          {this.renderIngredients()}
+          {!!showIngredientList && this.renderIngredients()}
+          {!!showRecipeList && this.renderRecipe()}
         </HomeWrapper>
       </Container>
     )
@@ -110,8 +163,12 @@ class Home extends Component {
 
 export default connect((state) => ({
   ingredientList: state.Cook.ingredientList,
+  recipeList: state.Cook.recipeList,
+  
+  getIngredientsLoading: state.Loading.GET_INGREDIENT_LIST,
 }), {
   getIngredientList,
+  getRecipeList,
   resetErrorRedux,
   resetLoadingRedux,
 })(Home)

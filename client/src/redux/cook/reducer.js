@@ -1,7 +1,8 @@
 import actions from './action';
 
 const initState = {
-  ingredientList: []
+  ingredientList: [],
+  recipeList: [],
 };
 
 export default function authReducer(state = initState, action) {
@@ -12,7 +13,13 @@ export default function authReducer(state = initState, action) {
         ...state,
         ingredientList: action.data
       }
-    default:
+      case actions.GET_RECIPE_LIST_SUCCESS:
+      case actions.GET_RECIPE_LIST_FAILURE:
+        return {
+          ...state,
+          recipeList: action.data
+        }
+      default:
       return state;
   }
 }
