@@ -7,7 +7,6 @@ export function* getIngredientList() {
   yield takeEvery(actions.GET_INGREDIENT_LIST_REQUEST, function* () {
     try {
       let res = yield call(getApi, { url: ConfigUrl.ingredient })
-      console.log(res)
       if (res) {
         yield put({
           type: actions.GET_INGREDIENT_LIST_SUCCESS,

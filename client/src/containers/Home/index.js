@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import { Container, Button } from "../../components"
+import { Container, Button, Card } from "../../components"
 import CookActions from "../../redux/cook/action"
 import ErrorActions from "../../redux/error/action"
 import LoadingActions from "../../redux/loading/action"
@@ -17,7 +17,8 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      cookDate: moment().toDate()
+      cookDate: moment().toDate(),
+      chosenIngredients: [],
     }
   }
 
@@ -33,11 +34,52 @@ class Home extends Component {
   };
 
   getIngredients = () => {
-    const { ingredientList } = this.props
-    console.log("get ajax")
     this.props.getIngredientList()
-    console.log(moment(this.state.cookDate).format("YYYY-MM-DD"))
-    console.log(ingredientList)
+  }
+
+  handleClick = (item, cookDate) => {
+    const { chosenIngredients } = this.state
+    let ingredientArray = chosenIngredients
+    let index = ingredientArray.indexOf(item.title);
+    let today = moment(cookDate)
+    let expireDate = moment(item['use-by'])
+
+    if (!!item.title && expireDate.diff(today, 'days') > 0) {
+      if (index === -1) {
+        ingredientArray.push(item.title)
+      } else {
+        ingredientArray.splice(index, 1)
+      }
+    }
+
+    this.setState({
+      chosenIngredients: ingredientArray
+    })
+  }
+
+  renderIngredients() {
+    const { chosenIngredients, cookDate } = this.state
+    const { ingredientList } = this.props
+    if (!Array.isArray(ingredientList)) {
+      return <div></div>
+    }
+
+    let list = []
+    let dateChosen = moment(cookDate).format("YYYY-MM-DD")
+
+    for (let i = 0; i < Math.ceil(ingredientList.length/4); i++) {
+      list.push(<div className="ingredient-row">
+        {
+          ingredientList.slice(i * 4, (i + 1) * 4).map((item, index) =>
+            <Card item={item} cookDate={dateChosen} key={index} chosenIngredients={chosenIngredients} clickEvent={e => this.handleClick(item, dateChosen)}/>
+          )
+        }
+      </div>)
+    }
+
+    return <div className="ingredient-list">
+      {list}
+    </div>
   }
 
   render() {
@@ -59,6 +101,7 @@ class Home extends Component {
               Check Ingredients
             </Button>
           </div>
+          {this.renderIngredients()}
         </HomeWrapper>
       </Container>
     )

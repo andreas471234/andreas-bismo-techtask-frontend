@@ -27,4 +27,8 @@ export const HomeWrapper = styled.div`
       margin-right: 20px
     }
   }
+  .ingredient-row{
+    display: flex;
+    justify-content: space-around;
+  }
 `
