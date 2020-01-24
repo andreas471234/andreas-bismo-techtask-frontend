@@ -3,6 +3,7 @@
 # dependencies
 /client/node_modules
 /api/node_modules
+/client/build
 
 # misc
 .DS_Store
